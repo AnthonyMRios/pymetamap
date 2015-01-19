@@ -43,4 +43,4 @@ Licensed under `Apache 2.0 <http://www.apache.org/licenses/LICENSE-2.0>`_.
 Written by Anthony Rios
 
 Bug reports and feature requests:
-`Github Issue Tracker <https://github.com/AnthonyMRios/pyclausie/issues>`_.
+`Github Issue Tracker <https://github.com/AnthonyMRios/pymetamap/issues>`_.
