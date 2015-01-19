@@ -23,14 +23,15 @@ class SubprocessBackend(MetaMap):
         """
         MetaMap.__init__(self, metamap_filename, version)
 
-    def extract_concepts(self, sentences, ids=None, composite_phrase=4, 
-                        word_sense_disambiguation=False, allow_large_n=False,
-                        no_derivational_variants=False,
-                        derivational_variants=False, ignore_word_order=False,
-                        allow_acronym_variants=False,
-                        unique_acronym_variants=False,
-                        prefer_multiple_concepts=False,
-                        ignore_stop_phrases=False, compute_all_mappings=False):
+    def extract_concepts(self, sentences=None, ids=None,
+                         composite_phrase=4, sentences_filename=None,
+                         file_format='sldi', allow_acronym_variants=False,
+                         word_sense_disambiguation=False, allow_large_n=False,
+                         no_derivational_variants=False,
+                         derivational_variants=False, ignore_word_order=False,
+                         unique_acronym_variants=False,
+                         prefer_multiple_concepts=False,
+                         ignore_stop_phrases=False, compute_all_mappings=False):
         """ extract_concepts takes a list of sentences and ids(optional)
             then returns a list of Concept objects extracted via
             MetaMap.
@@ -58,17 +59,29 @@ class SubprocessBackend(MetaMap):
         if allow_acronym_variants and unique_acronym_variants:
             raise ValueError("You can't use both allow_acronym_variants and "
                              "unique_acronym_variants.")
-        input_file = tempfile.NamedTemporaryFile(delete=False)
+        if (sentences is not None and filename is not None) or
+                (sentences is None and filename is None):
+            raise ValueError("You must either pass a list of sentences "
+                             "OR a filename.")
+        if file_format not in ['sldi','sldiID']:
+            raise ValueError("file_format must be either sldi or sldiID")
+
+        input_file = None
+        if sentences is not None:
+            input_file = tempfile.NamedTemporaryFile(delete=False)
+        else:
+            input_file = open(filename, 'r')
         output_file = tempfile.NamedTemporaryFile(delete=False)
         error = None
         try:
-            if ids is not None:
-                for identifier, sentence in zip(ids, sentences):
-                    input_file.write('%r|%r\n' % (identifier, sentence))
-            else:
-                for sentence in sentences:
-                    input_file.write('%r\n' % sentence)
-            input_file.flush()
+            if sentences is not None:
+                if ids is not None:
+                    for identifier, sentence in zip(ids, sentences):
+                        input_file.write('%r|%r\n' % (identifier, sentence))
+                else:
+                    for sentence in sentences:
+                        input_file.write('%r\n' % sentence)
+                input_file.flush()
 
             command = [self.metamap_filename, '-N']
             command.append('-Q')
@@ -93,7 +106,8 @@ class SubprocessBackend(MetaMap):
                 command.append('-K')
             if compute_all_mappings:
                 command.append('-b')
-            if ids is not None:
+            if ids is not None or (file_format == 'sldiID' and
+                    sentences is None):
                 command.append('--sldiID')
             else:
                 command.append('--sldi')
@@ -109,7 +123,10 @@ class SubprocessBackend(MetaMap):
                 
             output = output_file.read()
         finally:       
-            os.remove(input_file.name)
+            if sentences is not None:
+                os.remove(input_file.name)
+            else:
+                input_file.close()
             os.remove(output_file.name)
 
         concepts = Corpus.load(output.splitlines())
