@@ -101,11 +101,11 @@ class SubprocessBackend(MetaMap):
             command.append(output_file.name)
 
             metamap_process = subprocess.Popen(command, stdout=subprocess.PIPE)
-            while metamap_process is None:
+            while metamap_process.pol() is None:
                 stdout = metamap_process.stdout.readline()
                 if 'ERROR' in stdout:
                     metamap_process.terminate()
-                    error = output
+                    error = stdout.rstrip()
                 
             output = output_file.read()
         finally:       
