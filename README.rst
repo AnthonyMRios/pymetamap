@@ -26,7 +26,7 @@ method. This method taks a list of sentences as input and will return
 a list of Concept objects.
 ::
     >>> sents = ['Heart Attack', 'John had a huge heart attack']
-    >>> concepts = mm.extract_concepts(sents,[1,2])
+    >>> concepts,error = mm.extract_concepts(sents,[1,2])
     >>> for concept in concepts:
     ...     print concept
     Concept(index='1', mm='MM', score='14.64', preferred_name='Myocardial Infarction', cui='C0027051', semtypes='[dsyn]', trigger='["Heart attack"-tx-1-"Heart Attack"]', location='TX', pos_info='1:12', tree_codes='C14.280.647.500;C14.907.585.500')
@@ -41,6 +41,3 @@ More Information
 Licensed under `Apache 2.0 <http://www.apache.org/licenses/LICENSE-2.0>`_.
 
 Written by Anthony Rios
-
-Bug reports and feature requests:
-`Github Issue Tracker <https://github.com/AnthonyMRios/pymetamap/issues>`_.
