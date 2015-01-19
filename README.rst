@@ -8,7 +8,7 @@ then return them in the form of a list of Concept objects.
 How to Install
 --------------
 
->>> pip install pymetamap
+>>> python setup.py install
 
 Example Usage
 -------------
