@@ -24,7 +24,7 @@ class SubprocessBackend(MetaMap):
         MetaMap.__init__(self, metamap_filename, version)
 
     def extract_concepts(self, sentences=None, ids=None,
-                         composite_phrase=4, sentences_filename=None,
+                         composite_phrase=4, filename=None,
                          file_format='sldi', allow_acronym_variants=False,
                          word_sense_disambiguation=False, allow_large_n=False,
                          no_derivational_variants=False,
@@ -59,7 +59,7 @@ class SubprocessBackend(MetaMap):
         if allow_acronym_variants and unique_acronym_variants:
             raise ValueError("You can't use both allow_acronym_variants and "
                              "unique_acronym_variants.")
-        if (sentences is not None and filename is not None) or
+        if (sentences is not None and filename is not None) or \
                 (sentences is None and filename is None):
             raise ValueError("You must either pass a list of sentences "
                              "OR a filename.")
