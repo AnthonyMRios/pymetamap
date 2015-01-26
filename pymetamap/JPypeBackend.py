@@ -19,3 +19,7 @@ from .Concept import Corpus
 
 class JPypeBackend(MetaMap):
     def __init__(self):
+        jpype.startJVM(jpype.getDefaultJVMPath()(),
+                       '-ea',
+                       'Djava.class.path=' + 'TMP',
+                       *(extra_jvm_args or []))
