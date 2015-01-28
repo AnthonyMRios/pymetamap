@@ -33,7 +33,7 @@ class JPypeBackend(MetaMap):
                          unique_acronym_variants=False,
                          prefer_multiple_concepts=False,
                          ignore_stop_phrases=False, compute_all_mappings=False,
-                         num_procs=cpu_count(), batch_size=1000):
+                         num_procs=cpu_count(), batch_size=100):
          """ extract_concepts takes a list of sentences and ids(optional)
             then returns a list of Concept objects extracted via
             MetaMap.
@@ -72,39 +72,54 @@ class JPypeBackend(MetaMap):
         sendq = Queue(batch_size)
         recvq = Queue()
 
-    for rpt in xrange(num_procs):
-        Process(target=worker, args=(sendq, recvq)).start()
+        for rpt in xrange(num_procs):
+            Process(target=worker, args=(sendq, recvq)).start()
 
-    send_len = 0
-    recv_len = 0
-    itr = iter(iterable)
+        send_len = 0
+        recv_len = 0
+        try:
+            in_file = open(filename, 'r')
+        except IOError:
+            print "Can't open file %s." % filename
+            raise
+        itr = iter(in_file)
 
-    try:
-        value = itr.next()
-        while True:
-            try:
-                sendq.put(value, True, 0.1)
-                send_len += 1
-                value = itr.next()
-            except QueueFull:
-                while True:
-                    try:
-                        result = recvq.get(False)
-                        recv_len += 1
-                        yield result
-                    except QueueEmpty:
-                        break
-    except StopIteration:
-        pass
-    
-    while recv_len < send_len:
-        result = recvq.get()
-        recv_len += 1
-        yield result
-
-    for rpt in xrange(num_procs):
-        sendq.put(None)
+        try:
+            line = itr.next()
+            if file_format == 'sldi':
+                sentence = ['0000', line.rstrip()]
+            else:
+                sentence = line.rstrip().split('|')
+            while True:
+                try:
+                    sendq.put(sentence, True, 0.1)
+                    send_len += 1
+                    line = itr.next()
+                    if file_format == 'sldi':
+                        sentence = ['0000', line.rstrip()]
+                    else:
+                        sentence = line.rstrip().split('|')
+                except QueueFull:
+                    while True:
+                        try:
+                            result = recvq.get(False)
+                            recv_len += 1
+                            yield result
+                        except QueueEmpty:
+                            break
+        except StopIteration:
+            pass
         
+        in_file.close()
+
+        while recv_len < send_len:
+            result = recvq.get()
+            recv_len += 1
+            yield result
+
+        for rpt in xrange(num_procs):
+            sendq.put(None)
+            
     def worker(recvq, sendq):
         jpype.startJVM(jpype.getDefaultJVMPath(),
                        '-ea',
