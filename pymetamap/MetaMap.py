@@ -42,6 +42,9 @@ class MetaMap:
         if backend == 'subprocess':
             from SubprocessBackend import SubprocessBackend
             return SubprocessBackend(**extra_args)
+        if backend == 'jpype':
+            from JPypeBackend import JPypeBackend
+            return JPypeBackend (**extra_args)
 
         raise ValueError("Unknown backend: %r (known backends: "
                          "'subprocess')" % backend)

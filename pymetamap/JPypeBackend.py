@@ -151,7 +151,7 @@ class JPypeBackend(MetaMap):
         api.setOptions(theOptions)
 
         for terms in iter(recvq.get, None):
-            results = api.processCitationsFromString(terms)
+            results = api.processCitationsFromString(terms[1])
             for result in results:
                 for utterance in result.getUtteranceList():
                     for pcm in utterance.getPCMList():
@@ -165,7 +165,7 @@ class JPypeBackend(MetaMap):
                                 pos_info = mapEv.getPositionalInfo()
                                 tree = 'a.b.c'
                                 sendq.put('%s|MM|%s|%s|%s|%s|%s|TX|%s|%s' %
-                                          (index, score, pref_name, cui,
+                                          (terms[0], score, pref_name, cui,
                                            sem_types, match_words, pos_info,
                                            tree))
         jpype.shutdownJVM()
