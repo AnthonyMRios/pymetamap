@@ -18,11 +18,9 @@ from .MetaMap import MetaMap
 from .Concept import Corpus
 
 class JPypeBackend(MetaMap):
-    def __init__(self):
-        jpype.startJVM(jpype.getDefaultJVMPath()(),
-                       '-ea',
-                       'Djava.class.path=' + 'TMP',
-                       *(extra_jvm_args or []))
+    def __init__(self, jar_folder_name):
+        self.jar_folder_name = jar_folder_name
+        MetaMap.__init__(self, None, version)
 
     def extract_concepts(self, sentences=None, ids=None,
                          composite_phrase=4, filename=None,
@@ -123,7 +121,7 @@ class JPypeBackend(MetaMap):
     def worker(recvq, sendq):
         jpype.startJVM(jpype.getDefaultJVMPath(),
                        '-ea',
-                       '-Djava.class.path=' + self.java_classes,
+                       '-Djava.class.path=' + self.java_classes + '/*',
                        *(extra_jvm_argsd or []))
         mm_package = jpype.JPackage('gov').nih.nlm.nls.metamap
         api = mm_package.MetaMapApiImpl()
