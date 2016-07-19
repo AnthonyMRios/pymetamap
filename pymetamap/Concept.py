@@ -72,12 +72,11 @@ class Corpus(list):
         corpus = this_class()
         for line in stream:
             fields = line.split('|')
-            if line[1] == 'MMI':
+            if fields[1] == 'MMI':
                 corpus.append(ConceptMMI.from_mmi(line))
-            elif line[1] == 'AA':
+            elif fields[1] == 'AA':
                 corpus.append(ConceptAA.from_mmi(line))
             else:
                 corpus.append(ConceptUA.from_mmi(line))
 
         return corpus
-
