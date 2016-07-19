@@ -11,7 +11,9 @@
 # limitations under the License.
 
 from .MetaMap import MetaMap
-from Concept import Concept 
+from Concept import ConceptMMI
+from Concept import ConceptAA
+from Concept import ConceptUA
 from Concept import Corpus
 
 __all__ = (MetaMap, Concept, Corpus)
