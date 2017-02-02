@@ -68,19 +68,19 @@ class SubprocessBackend(MetaMap):
 
         input_file = None
         if sentences is not None:
-            input_file = tempfile.NamedTemporaryFile(delete=False)
+            input_file = tempfile.NamedTemporaryFile(mode="wb", delete=False)
         else:
-            input_file = open(filename, 'r')
-        output_file = tempfile.NamedTemporaryFile(delete=False)
+            input_file = open(filename, 'wb')
+        output_file = tempfile.NamedTemporaryFile(mode="r", delete=False)
         error = None
         try:
             if sentences is not None:
                 if ids is not None:
                     for identifier, sentence in zip(ids, sentences):
-                        input_file.write('%r|%r\n' % (identifier, sentence))
+                        input_file.write(b'%r|%r\n' % (identifier, sentence))
                 else:
                     for sentence in sentences:
-                        input_file.write('%r\n' % sentence)
+                        input_file.write(b'%r\n' % sentence)
                 input_file.flush()
 
             command = [self.metamap_filename, '-N']
@@ -116,13 +116,12 @@ class SubprocessBackend(MetaMap):
 
             metamap_process = subprocess.Popen(command, stdout=subprocess.PIPE)
             while metamap_process.poll() is None:
-                stdout = metamap_process.stdout.readline()
+                stdout = str(metamap_process.stdout.readline())
                 if 'ERROR' in stdout:
                     metamap_process.terminate()
                     error = stdout.rstrip()
-                
-            output = output_file.read()
-        finally:       
+            output = str(output_file.read())
+        finally:
             if sentences is not None:
                 os.remove(input_file.name)
             else:

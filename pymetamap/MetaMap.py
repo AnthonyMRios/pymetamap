@@ -40,7 +40,7 @@ class MetaMap:
         extra_args.update(metamap_filename=metamap_filename, version=version)
 
         if backend == 'subprocess':
-            from SubprocessBackend import SubprocessBackend
+            from .SubprocessBackend import SubprocessBackend
             return SubprocessBackend(**extra_args)
 
         raise ValueError("Unknown backend: %r (known backends: "
