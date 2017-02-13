@@ -70,7 +70,7 @@ class SubprocessBackend(MetaMap):
         if sentences is not None:
             input_file = tempfile.NamedTemporaryFile(mode="wb", delete=False)
         else:
-            input_file = open(filename, 'wb')
+            input_file = open(filename, 'r')
         output_file = tempfile.NamedTemporaryFile(mode="r", delete=False)
         error = None
         try:
