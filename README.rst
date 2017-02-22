@@ -5,6 +5,8 @@ Python wrapper around `MetaMap <http://metamap.nlm.nih.gov/>`_.
 This will take a list of sentences and extract concepts using MetaMap
 then return them in the form of a list of Concept objects.
 
+**Note:** This code does **not** work with Windows because of my use of NamedTemporaryFile in SubprocessBackend.py.
+
 How to Install
 --------------
 
