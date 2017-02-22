@@ -43,3 +43,5 @@ More Information
 Licensed under `Apache 2.0 <http://www.apache.org/licenses/LICENSE-2.0>`_.
 
 Written by Anthony Rios
+
+Special thanks to [joaopalotti](https://github.com/joaopalotti) for his contributions.
