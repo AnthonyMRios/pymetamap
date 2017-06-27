@@ -77,10 +77,10 @@ class SubprocessBackend(MetaMap):
             if sentences is not None:
                 if ids is not None:
                     for identifier, sentence in zip(ids, sentences):
-                        input_file.write(b'%r|%r\n' % (identifier, sentence))
+                        input_file.write('{0!r}|{1!r}\n'.format(identifier, sentence).encode('utf8'))
                 else:
                     for sentence in sentences:
-                        input_file.write(b'%r\n' % sentence)
+                        input_file.write('{0!r}\n'.format(sentence).encode('utf8'))
                 input_file.flush()
 
             command = [self.metamap_filename, '-N']

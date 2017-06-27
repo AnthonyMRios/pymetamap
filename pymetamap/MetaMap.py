@@ -24,7 +24,7 @@ class MetaMap:
     """
     __metaclass__ = abc.ABCMeta
     def __init__(self, metamap_filename, version=None):
-        self.metamap_filename = metamap_filename
+        self.metamap_filename = str(metamap_filename)
         if version is None:
             version = DEFAULT_METAMAP_VERSION
 
