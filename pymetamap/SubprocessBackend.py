@@ -31,7 +31,8 @@ class SubprocessBackend(MetaMap):
                          derivational_variants=False, ignore_word_order=False,
                          unique_acronym_variants=False,
                          prefer_multiple_concepts=False,
-                         ignore_stop_phrases=False, compute_all_mappings=False):
+                         ignore_stop_phrases=False, compute_all_mappings=False,
+                         mm_data_version=False):
         """ extract_concepts takes a list of sentences and ids(optional)
             then returns a list of Concept objects extracted via
             MetaMap.
@@ -48,6 +49,7 @@ class SubprocessBackend(MetaMap):
                 Prefer Multiple Concepts -Y
                 Ignore Stop Phrases -K
                 Compute All Mappings -b
+                MM Data Version -V
 
             For information about the available options visit
             http://metamap.nlm.nih.gov/.
@@ -86,6 +88,9 @@ class SubprocessBackend(MetaMap):
             command = [self.metamap_filename, '-N']
             command.append('-Q')
             command.append(str(composite_phrase))
+            if mm_data_version is not False:
+                command.append('-V')
+                command.append(str(mm_data_version))
             if word_sense_disambiguation:
                 command.append('-y')
             if allow_large_n:
