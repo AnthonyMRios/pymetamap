@@ -89,6 +89,8 @@ class SubprocessBackend(MetaMap):
             command.append('-Q')
             command.append(str(composite_phrase))
             if mm_data_version is not False:
+                if mm_data_version not in ['Base', 'USAbase', 'NLM']:
+                    raise ValueError("mm_data_version must be Base, USAbase, or NLM.")
                 command.append('-V')
                 command.append(str(mm_data_version))
             if word_sense_disambiguation:
