@@ -10,6 +10,10 @@ then return them in the form of a list of Concept objects.
 How to Install
 --------------
 
+First install MetaMap by following the following instructions: https://metamap.nlm.nih.gov/Installation.shtml
+
+Next, pymetamap can be installed using the following command:
+
 >>> python setup.py install
 
 Example Usage
@@ -21,7 +25,7 @@ To start you must create a MetaMap instance from the pymetamap package.
     >>> mm = MetaMap.get_instance('/opt/public_mm/bin/metamap12')
 
 You must supply the metamap binary to ``get_instance()`` in order to
-extract concepts.
+extract concepts. Depending on where you installed MetaMap and depending on the version you are using, you will need to change the '/opt/public_mm/bin/metamap12' to the correct location. For example, if you installed the 2016 version of MetaMap, then the binary will be called metamap16.
 
 To extract concepts from a sentence use the ``extract_concepts()``
 method. This method taks a list of sentences as input and will return
