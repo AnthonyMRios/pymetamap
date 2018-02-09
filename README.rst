@@ -20,7 +20,9 @@ Example Usage
 -------------
 
 To start you must create a MetaMap instance from the pymetamap package.
+
 ::
+
     >>> from pymetamap import MetaMap
     >>> mm = MetaMap.get_instance('/opt/public_mm/bin/metamap12')
 
@@ -30,7 +32,9 @@ extract concepts. Depending on where you installed MetaMap and depending on the 
 To extract concepts from a sentence use the ``extract_concepts()``
 method. This method taks a list of sentences as input and will return
 a list of Concept objects.
+
 ::
+
     >>> sents = ['Heart Attack', 'John had a huge heart attack']
     >>> concepts,error = mm.extract_concepts(sents,[1,2])
     >>> for concept in concepts:
