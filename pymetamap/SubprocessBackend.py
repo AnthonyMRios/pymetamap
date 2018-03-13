@@ -32,7 +32,8 @@ class SubprocessBackend(MetaMap):
                          unique_acronym_variants=False,
                          prefer_multiple_concepts=False,
                          ignore_stop_phrases=False, compute_all_mappings=False,
-                         mm_data_version=False):
+                         mm_data_version=False, exclude_sources=False,
+                         restrict_to_sources=False):
         """ extract_concepts takes a list of sentences and ids(optional)
             then returns a list of Concept objects extracted via
             MetaMap.
@@ -50,6 +51,9 @@ class SubprocessBackend(MetaMap):
                 Ignore Stop Phrases -K
                 Compute All Mappings -b
                 MM Data Version -V
+                Exclude Sources -e
+                Restrict to Sources -R
+                
 
             For information about the available options visit
             http://metamap.nlm.nih.gov/.
@@ -113,6 +117,12 @@ class SubprocessBackend(MetaMap):
                 command.append('-K')
             if compute_all_mappings:
                 command.append('-b')
+            if not exclude_sources:
+                command.append('-e')
+                command.append(','.join(exclude_sources)
+            if not restrict_to_sources:
+                command.append('-R')
+                command.append(','.join(restrict_to_sources)
             if ids is not None or (file_format == 'sldiID' and
                     sentences is None):
                 command.append('--sldiID')
