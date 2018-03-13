@@ -119,10 +119,10 @@ class SubprocessBackend(MetaMap):
                 command.append('-b')
             if not exclude_sources:
                 command.append('-e')
-                command.append(','.join(exclude_sources)
+                command.append(str(','.join(exclude_sources)))
             if not restrict_to_sources:
                 command.append('-R')
-                command.append(','.join(restrict_to_sources)
+                command.append(str(','.join(restrict_to_sources)))
             if ids is not None or (file_format == 'sldiID' and
                     sentences is None):
                 command.append('--sldiID')
