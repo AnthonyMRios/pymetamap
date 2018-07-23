@@ -27,10 +27,13 @@ To start you must create a MetaMap instance from the pymetamap package.
     >>> mm = MetaMap.get_instance('/opt/public_mm/bin/metamap12')
 
 You must supply the metamap binary to ``get_instance()`` in order to
-extract concepts. Depending on where you installed MetaMap and depending on the version you are using, you will need to change the ``/opt/public_mm/bin/metamap12`` to the correct location. For example, if you installed the 2016 version of MetaMap, then the binary will be called ``metamap16``.
+extract concepts. Depending on where you installed MetaMap and depending on the version you are using, you will need to change the ``/opt/public_mm/bin/metamap12`` to the correct location.
+For example, if you installed the 2016 version of MetaMap, then the binary will be called ``metamap16``.
+
+**Note:** Metamap binary path should be absolute.
 
 To extract concepts from a sentence use the ``extract_concepts()``
-method. This method taks a list of sentences as input and will return
+method. This method takes a list of sentences as input and will return
 a list of Concept objects.
 
 ::
@@ -42,7 +45,7 @@ a list of Concept objects.
     Concept(index='1', mm='MM', score='14.64', preferred_name='Myocardial Infarction', cui='C0027051', semtypes='[dsyn]', trigger='["Heart attack"-tx-1-"Heart Attack"]', location='TX', pos_info='1:12', tree_codes='C14.280.647.500;C14.907.585.500')
     Concept(index='2', mm='MM', score='13.22', preferred_name='Myocardial Infarction', cui='C0027051', semtypes='[dsyn]', trigger='["Heart attack"-tx-1-"heart attack"]', location='TX', pos_info='17:12', tree_codes='C14.280.647.500;C14.907.585.500')
 
-This example shows two seperate concepts extracted via MetaMap from two
+This example shows two separate concepts extracted via MetaMap from two
 different sentences (sentence 1 and sentence 2).
 
 More Information

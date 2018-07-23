@@ -11,8 +11,10 @@
 # limitations under the License.
 
 import abc
+from os.path import isabs
 
 DEFAULT_METAMAP_VERSION = '2012'
+
 
 class MetaMap:
     """ Abstract base class for extracting concepts from text using
@@ -23,8 +25,10 @@ class MetaMap:
         Subclasses need to override the extract_concepts method.
     """
     __metaclass__ = abc.ABCMeta
+
     def __init__(self, metamap_filename, version=None):
         self.metamap_filename = str(metamap_filename)
+        assert isabs(self.metamap_filename), "metamap_filename: {0} should be an absolute path".format(self.metamap_filename)
         if version is None:
             version = DEFAULT_METAMAP_VERSION
 
@@ -38,6 +42,7 @@ class MetaMap:
     def get_instance(metamap_filename, version=None, backend='subprocess',
                      **extra_args):
         extra_args.update(metamap_filename=metamap_filename, version=version)
+        assert isabs(metamap_filename), "metamap_filename: {0} should be an absolute path".format(metamap_filename)
 
         if backend == 'subprocess':
             from .SubprocessBackend import SubprocessBackend
