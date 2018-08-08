@@ -16,6 +16,7 @@ import tempfile
 from .MetaMap import MetaMap
 from .Concept import Corpus
 
+
 class SubprocessBackend(MetaMap):
     def __init__(self, metamap_filename, version=None):
         """ Interface to MetaMap using subprocess. This creates a
@@ -33,7 +34,7 @@ class SubprocessBackend(MetaMap):
                          prefer_multiple_concepts=False,
                          ignore_stop_phrases=False, compute_all_mappings=False,
                          mm_data_version=False, exclude_sources=[],
-                         restrict_to_sources=[]):
+                         restrict_to_sources=[], restrict_to_sts=[], exclude_sts=[]):
         """ extract_concepts takes a list of sentences and ids(optional)
             then returns a list of Concept objects extracted via
             MetaMap.
@@ -53,6 +54,8 @@ class SubprocessBackend(MetaMap):
                 MM Data Version -V
                 Exclude Sources -e
                 Restrict to Sources -R
+                Restrict to Semantic Types -J
+                Exclude Semantic Types -k
                 
 
             For information about the available options visit
@@ -123,6 +126,12 @@ class SubprocessBackend(MetaMap):
             if len(restrict_to_sources) > 0:
                 command.append('-R')
                 command.append(str(','.join(restrict_to_sources)))
+            if len(restrict_to_sts) > 0:
+                command.append('-J')
+                command.append(str(','.join(restrict_to_sts)))
+            if len(exclude_sts) > 0:
+                command.append('-k')
+                command.append(str(','.join(exclude_sts)))
             if ids is not None or (file_format == 'sldiID' and
                     sentences is None):
                 command.append('--sldiID')
