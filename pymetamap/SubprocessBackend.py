@@ -28,7 +28,9 @@ class SubprocessBackend(MetaMap):
                          composite_phrase=4, filename=None,
                          file_format='sldi', allow_acronym_variants=False,
                          word_sense_disambiguation=False, allow_large_n=False,
-                         no_derivational_variants=False,
+                         strict_model=False, relaxed_model=False,
+                         allow_overmatches=False, allow_concept_gaps=False,
+                         term_processing=False, no_derivational_variants=False,
                          derivational_variants=False, ignore_word_order=False,
                          unique_acronym_variants=False,
                          prefer_multiple_concepts=False,
@@ -42,9 +44,14 @@ class SubprocessBackend(MetaMap):
             Supported Options:
                 Composite Phrase -Q
                 Word Sense Disambiguation -y
+                use strict model -A
+                use relaxed model -C
                 allow large N -l
+                allow overmatches -o
+                allow concept gaps -g
+                term processing -z
                 No Derivational Variants -d
-                Derivational Variants -D
+                All Derivational Variants -D
                 Ignore Word Order -i
                 Allow Acronym Variants -a
                 Unique Acronym Variants -u
@@ -102,8 +109,18 @@ class SubprocessBackend(MetaMap):
                 command.append(str(mm_data_version))
             if word_sense_disambiguation:
                 command.append('-y')
+            if strict_model:
+                command.append('-A')
+            if relaxed_model:
+                command.append('-C')
             if allow_large_n:
                 command.append('-l')
+            if allow_overmatches:
+                command.append('-o')
+            if allow_concept_gaps:
+                command.append('-g')
+            if term_processing:
+                command.append('-z')
             if no_derivational_variants:
                 command.append('-d')
             if derivational_variants:
