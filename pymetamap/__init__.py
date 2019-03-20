@@ -11,15 +11,19 @@
 # limitations under the License.
 
 from .MetaMap import MetaMap
+from .MetaMapLite import MetaMapLite
 from .Concept import ConceptMMI
 from .Concept import ConceptAA
 from .Concept import ConceptUA
 from .Concept import Corpus
+from .ConceptLite import ConceptLiteMMI
+from .ConceptLite import CorpusLite
 from .SubprocessBackend import SubprocessBackend
+from .SubprocessBackendLite import SubprocessBackendLite
 
 
-__all__ = (MetaMap, Concept, Corpus)
+__all__ = (MetaMap, MetaMapLite, Concept, ConceptLite, Corpus, CorpusLite)
 
 __authors__ = 'Anthony Rios'
-__version__ = '0.1'
+__version__ = '0.2'
 __email__ = 'anthonymrios@gmail.com'

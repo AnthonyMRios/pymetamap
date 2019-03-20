@@ -30,9 +30,16 @@ You must supply the metamap binary to ``get_instance()`` in order to
 extract concepts. Depending on where you installed MetaMap and depending on the version you are using, you will need to change the ``/opt/public_mm/bin/metamap12`` to the correct location.
 For example, if you installed the 2016 version of MetaMap, then the binary will be called ``metamap16``.
 
-**Note:** Metamap binary path should be absolute.
+We not support MetaMapLite. To use MetaMapLite, rather than MetaMap, create a MetaMapLite instance.
 
-To extract concepts from a sentence use the ``extract_concepts()``
+::
+
+    >>> from pymetamap import MetaMapLite
+    >>> mm = MetaMap.get_instance('/opt/public_mm_lite_3.6.2rc3/')
+
+**Note:** The MetaMap and MetaMapLite binary paths should be absolute.
+
+To extract concepts from a sentence with MetamMapLite and MetaMap use the ``extract_concepts()``
 method. This method takes a list of sentences as input and will return
 a list of Concept objects.
 
