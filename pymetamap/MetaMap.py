@@ -11,7 +11,8 @@
 # limitations under the License.
 
 import abc
-from os.path import isabs
+from os import access, X_OK
+from os.path import isabs, isfile
 
 DEFAULT_METAMAP_VERSION = '2012'
 
@@ -28,6 +29,8 @@ class MetaMap:
 
     def __init__(self, metamap_filename, version=None):
         self.metamap_filename = str(metamap_filename)
+        assert isfile(self.metamap_filename), "metamap_filename: {0} :: Please provide metamap executable file path".format(self.metamap_filename)
+        assert access(self.metamap_filename, X_OK), "User doesn't have executable access to metamap_filename: {0}".format(self.metamap_filename)
         assert isabs(self.metamap_filename), "metamap_filename: {0} should be an absolute path".format(self.metamap_filename)
         if version is None:
             version = DEFAULT_METAMAP_VERSION
@@ -42,6 +45,8 @@ class MetaMap:
     def get_instance(metamap_filename, version=None, backend='subprocess',
                      **extra_args):
         extra_args.update(metamap_filename=metamap_filename, version=version)
+        assert isfile(metamap_filename), "metamap_filename: {0} :: Please provide metamap executable file path".format(metamap_filename)
+        assert access(metamap_filename, X_OK), "User doesn't have executable access to metamap_filename: {0}".format(metamap_filename)
         assert isabs(metamap_filename), "metamap_filename: {0} should be an absolute path".format(metamap_filename)
 
         if backend == 'subprocess':
