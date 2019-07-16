@@ -30,7 +30,7 @@ You must supply the metamap binary to ``get_instance()`` in order to
 extract concepts. Depending on where you installed MetaMap and depending on the version you are using, you will need to change the ``/opt/public_mm/bin/metamap12`` to the correct location.
 For example, if you installed the 2016 version of MetaMap, then the binary will be called ``metamap16``.
 
-We not support MetaMapLite. To use MetaMapLite, rather than MetaMap, create a MetaMapLite instance.
+We now support MetaMapLite. To use MetaMapLite, rather than MetaMap, create a MetaMapLite instance:
 
 ::
 
