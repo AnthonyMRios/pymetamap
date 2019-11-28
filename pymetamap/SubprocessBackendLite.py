@@ -18,11 +18,11 @@ from .ConceptLite import CorpusLite
 
 
 class SubprocessBackendLite(MetaMapLite):
-    def __init__(self, metamap_filename):
+    def __init__(self, metamap_home):
         """ Interface to MetaMap using subprocess. This creates a
             command line call to a specified metamap process.
         """
-        MetaMapLite.__init__(self, metamap_filename=metamap_filename)
+        MetaMapLite.__init__(self, metamap_home=metamap_home)
 
     def extract_concepts(self, sentences=None, ids=None, filename=None,
                          restrict_to_sts=None, restrict_to_sources=None):
@@ -67,7 +67,7 @@ class SubprocessBackendLite(MetaMapLite):
                         input_file.write('{0!r}\n'.format(sentence).encode('utf8'))
                 input_file.flush()
 
-            command = ["bash", os.path.join(self.metamap_filename, "metamaplite.sh")]
+            command = ["bash", os.path.join(self.metamap_home, "metamaplite.sh")]
             if restrict_to_sts:
                 if isinstance(restrict_to_sts, str):
                     restrict_to_sts = [restrict_to_sts]

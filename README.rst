@@ -35,11 +35,11 @@ We now support MetaMapLite. To use MetaMapLite, rather than MetaMap, create a Me
 ::
 
     >>> from pymetamap import MetaMapLite
-    >>> mm = MetaMap.get_instance('/opt/public_mm_lite_3.6.2rc3/')
+    >>> mm = MetaMapLite.get_instance('/opt/public_mm_lite_3.6.2rc3/')
 
-**Note:** The MetaMap and MetaMapLite binary paths should be absolute.
+**Note:** The MetaMap binary path and MetaMapLite home directory should be absolute.
 
-To extract concepts from a sentence with MetamMapLite and MetaMap use the ``extract_concepts()``
+To extract concepts from a sentence with MetaMapLite and MetaMap use the ``extract_concepts()``
 method. This method takes a list of sentences as input and will return
 a list of Concept objects.
 

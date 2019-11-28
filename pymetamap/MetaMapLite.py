@@ -11,22 +11,26 @@
 # limitations under the License.
 
 import abc
-from os.path import isabs
+from os import access, X_OK
+from os.path import isabs, isdir
 
 
 class MetaMapLite:
     """ Abstract base class for extracting concepts from text using
         MetaMapLite. To use this you will need to have downloaded the
-        recent MetaMapLite software from NLM. metamap_filename should point
-        to the binary you intend to use.
+        recent MetaMapLite software from NLM. metamap_home should point
+        to the public_mm_lite folder which contains metamaplite.sh.
 
         Subclasses need to override the extract_concepts method.
     """
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self, metamap_filename):
-        self.metamap_filename = str(metamap_filename)
-        assert isabs(self.metamap_filename), "metamap_filename: {0} should be an absolute path".format(self.metamap_filename)
+    def __init__(self, metamap_home):
+        self.metamap_home = str(metamap_home)
+        assert isdir(self.metamap_home), "metamap_home: {0} :: Please provide public_mm_lite directory path" \
+                                         " which contains metamaplite.sh".format(self.metamap_home)
+        assert access(self.metamap_home, X_OK), "User doesn't have executable access to metamap_home: {}".format(self.metamap_home)
+        assert isabs(self.metamap_home), "metamap_home: {0} should be an absolute path".format(self.metamap_home)
 
     @abc.abstractmethod
     def extract_concepts(self, sentences=None, ids=None, filename=None):
@@ -34,9 +38,9 @@ class MetaMapLite:
         return
 
     @staticmethod
-    def get_instance(metamap_filename, backend='subprocess', **extra_args):
-        extra_args.update(metamap_filename=metamap_filename)
-        assert isabs(metamap_filename), "metamap_filename: {0} should be an absolute path".format(metamap_filename)
+    def get_instance(metamap_home, backend='subprocess', **extra_args):
+        extra_args.update(metamap_home=metamap_home)
+        assert isabs(metamap_home), "metamap_home: {0} should be an absolute path".format(metamap_home)
 
         if backend == 'subprocess':
             from .SubprocessBackendLite import SubprocessBackendLite
