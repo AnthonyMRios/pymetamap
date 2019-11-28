@@ -83,23 +83,13 @@ class SubprocessBackend(MetaMap):
             raise ValueError("file_format must be either sldi or sldiID")
 
         input_file = None
-        if sentences is not None:
-            input_file = tempfile.NamedTemporaryFile(mode="wb", delete=False)
-        else:
-            input_file = open(filename, 'r')
-        output_file = tempfile.NamedTemporaryFile(mode="r", delete=False)
+        output_file = None
         error = None
-        try:
-            if sentences is not None:
-                if ids is not None:
-                    for identifier, sentence in zip(ids, sentences):
-                        input_file.write('{0!r}|{1!r}\n'.format(identifier, sentence).encode('utf8'))
-                else:
-                    for sentence in sentences:
-                        input_file.write('{0!r}\n'.format(sentence).encode('utf8'))
-                input_file.flush()
 
-            command = [self.metamap_filename, '-N']
+        try:
+            command = list()
+            command.append(self.metamap_filename)
+            command.append('-N')
             command.append('-Q')
             command.append(str(composite_phrase))
             if mm_data_version is not False:
@@ -154,22 +144,71 @@ class SubprocessBackend(MetaMap):
                 command.append('--sldiID')
             else:
                 command.append('--sldi')
-            command.append(input_file.name)
-            command.append(output_file.name)
 
-            metamap_process = subprocess.Popen(command, stdout=subprocess.PIPE)
-            while metamap_process.poll() is None:
-                stdout = str(metamap_process.stdout.readline())
-                if 'ERROR' in stdout:
-                    metamap_process.terminate()
-                    error = stdout.rstrip()
-            output = str(output_file.read())
+            command.append('--silent')
+
+            if sentences is not None:
+                input_text = ""
+                if ids is not None:
+                    for identifier, sentence in zip(ids, sentences):
+                        input_text += '{0!r}|{1!r}\n'.format(identifier, sentence).encode('utf8')
+                else:
+                    for sentence in sentences:
+                        input_text += '{0!r}\n'.format(sentence).encode('utf8')
+
+                input_command = list()
+                input_command.append('echo')
+                input_command.append('-e')
+                input_command.append(input_text)
+
+                input_process = subprocess.Popen(input_command, stdout=subprocess.PIPE)
+                metamap_process = subprocess.Popen(command, stdout=subprocess.PIPE, stdin=input_process.stdout)
+
+                output, error = metamap_process.communicate()
+                # "Processing" sentences are returned as stderr. Hence success/failure of metamap_process needs to be
+                #  checked by its returncode.
+                if metamap_process.returncode == 0:
+                    # Initial line(s) of output contains MetaMap command and MetaMap details.
+                    # Even on using --silent option, MetaMap command is sent to stdout.
+                    # Hence pre-processing is required to segregate these from MetaMap output in stdout.
+                    prev_new_line = -1
+                    while (prev_new_line + 1) < len(output):
+                        next_new_line = output.find('\n', prev_new_line + 1)
+                        if next_new_line < 0:
+                            next_new_line = len(output)
+                        # Check if the current line is in MMI output format i.e. fields separated by '|'
+                        fields = output[prev_new_line + 1:next_new_line].split('|')
+                        # https://metamap.nlm.nih.gov/Docs/MMI_Output_2016.pdf
+                        #   This document explains the various fields in MMI output.
+                        if len(fields) > 1 and fields[1] in ['MMI', 'AA', 'UA']:
+                            break
+                        else:
+                            prev_new_line = next_new_line
+
+                    output = output[prev_new_line + 1:]
+                else:
+                    error = "ERROR: MetaMap failed"
+            else:
+                input_file = open(filename, 'r')
+                output_file = tempfile.NamedTemporaryFile(mode="r", delete=False)
+
+                command.append(input_file.name)
+                command.append(output_file.name)
+
+                metamap_process = subprocess.Popen(command, stdout=subprocess.PIPE)
+                while metamap_process.poll() is None:
+                    stdout = str(metamap_process.stdout.readline())
+                    if 'ERROR' in stdout:
+                        metamap_process.terminate()
+                        error = stdout.rstrip()
+                output = str(output_file.read())
         finally:
             if sentences is not None:
-                os.remove(input_file.name)
+                # os.remove(input_file.name)
+                pass
             else:
                 input_file.close()
-            os.remove(output_file.name)
+                os.remove(output_file.name)
 
         concepts = Corpus.load(output.splitlines())
         return (concepts, error)
