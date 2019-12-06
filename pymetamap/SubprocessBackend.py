@@ -148,13 +148,19 @@ class SubprocessBackend(MetaMap):
             command.append('--silent')
 
             if sentences is not None:
-                input_text = ""
+                input_text = None
                 if ids is not None:
                     for identifier, sentence in zip(ids, sentences):
-                        input_text += '{0!r}|{1!r}\n'.format(identifier, sentence).encode('utf8')
+                        if input_text is None:
+                            input_text = '{0!r}|{1!r}\n'.format(identifier, sentence).encode('utf8')
+                        else:
+                            input_text += '{0!r}|{1!r}\n'.format(identifier, sentence).encode('utf8')
                 else:
                     for sentence in sentences:
-                        input_text += '{0!r}\n'.format(sentence).encode('utf8')
+                        if input_text is None:
+                            input_text = '{0!r}\n'.format(sentence).encode('utf8')
+                        else:
+                            input_text += '{0!r}\n'.format(sentence).encode('utf8')
 
                 input_command = list()
                 input_command.append('echo')
