@@ -12,6 +12,7 @@
 
 import os
 import subprocess
+import sys
 import tempfile
 from .MetaMap import MetaMap
 from .Concept import Corpus
@@ -171,6 +172,10 @@ class SubprocessBackend(MetaMap):
                 metamap_process = subprocess.Popen(command, stdout=subprocess.PIPE, stdin=input_process.stdout)
 
                 output, error = metamap_process.communicate()
+                if sys.version_info[0] > 2:
+                    if isinstance(output, bytes):
+                        output = output.decode()
+
                 # "Processing" sentences are returned as stderr. Hence success/failure of metamap_process needs to be
                 #  checked by its returncode.
                 if metamap_process.returncode == 0:
