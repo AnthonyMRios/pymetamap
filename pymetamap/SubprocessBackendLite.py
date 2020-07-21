@@ -48,7 +48,7 @@ class SubprocessBackendLite(MetaMapLite):
 
         input_file = None
         if sentences is not None:
-            input_file = tempfile.NamedTemporaryFile(mode="wb", delete=False)
+            input_file = tempfile.NamedTemporaryFile(mode="wb", delete=False, suffix='.mmi')
         else:
             input_file = open(filename, 'r')
 
@@ -61,19 +61,20 @@ class SubprocessBackendLite(MetaMapLite):
             if sentences is not None:
                 if ids is not None:
                     for identifier, sentence in zip(ids, sentences):
-                        input_file.write('{0!r}|{1!r}\n'.format(identifier, sentence).encode('utf8'))
+                        input_file.write('{0!r}|{1}\n'.format(identifier, sentence).encode('utf8'))
                 else:
                     for sentence in sentences:
                         input_file.write('{0!r}\n'.format(sentence).encode('utf8'))
                 input_file.flush()
+                input_file.close()
 
             command = ["bash", os.path.join(self.metamap_home, "metamaplite.sh")]
             if restrict_to_sts:
                 if isinstance(restrict_to_sts, str):
                     restrict_to_sts = [restrict_to_sts]
                 if len(restrict_to_sts) > 0:
-                    command.append('--restrict_to_sts')
-                    command.append(str(','.join(restrict_to_sts)))
+                    command.append('--restrict_to_sts={}'.format(str(','.join(restrict_to_sts))))
+                    #command.append(str(','.join(restrict_to_sts)))
 
             if restrict_to_sources:
                 if isinstance(restrict_to_sources, str):
@@ -86,8 +87,18 @@ class SubprocessBackendLite(MetaMapLite):
                 command.append('--inputformat=sldiwi')
 
             command.append(input_file.name)
+            command.append('--overwrite')
+            #command.append('--indexdir={}data/ivf/2020AA/USAbase'.format(self.metamap_home))
+            #command.append('--specialtermsfile={}data/specialterms.txt'.format(self.metamap_home))
             # command.append(output_file.name)
 
+            output_file_name, file_extension = os.path.splitext(input_file.name)
+            output_file_name += "." + "mmi"
+
+            output_file_name, file_extension = os.path.splitext(input_file.name)
+            output_file_name += "." + "mmi"
+
+            # output = str(output_file.read())
             metamap_process = subprocess.Popen(command, stdout=subprocess.PIPE)
             while metamap_process.poll() is None:
                 stdout = str(metamap_process.stdout.readline())
@@ -103,13 +114,14 @@ class SubprocessBackendLite(MetaMapLite):
                 output = fd.read()
             # output = str(output_file.read())
             # print("output: {0}".format(output))
-        finally:
-            if sentences is not None:
-                os.remove(input_file.name)
-            else:
-                input_file.close()
-            # os.remove(output_file.name)
-            os.remove(output_file_name)
-
+        except:
+            pass
         concepts = CorpusLite.load(output.splitlines())
         return concepts, error
+#finally:
+#    if sentences is not None:
+#        os.remove(input_file.name)
+#    else:
+#        input_file.close()
+#    # os.remove(output_file.name)
+#    #os.remove(output_file_name)
