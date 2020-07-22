@@ -46,6 +46,7 @@ class SubprocessBackend(MetaMap):
                          prefer_multiple_concepts=False,
                          ignore_stop_phrases=False,
                          compute_all_mappings=False,
+                         prune=False,
                          mm_data_version=False,
                          exclude_sources=[],
                          restrict_to_sources=[],
@@ -115,6 +116,9 @@ class SubprocessBackend(MetaMap):
                 command.append('-y')
             if strict_model:
                 command.append('-A')
+            if prune is not False:
+                command.append('--prune')
+                command.append(str(prune))
             if relaxed_model:
                 command.append('-C')
             if allow_large_n:
